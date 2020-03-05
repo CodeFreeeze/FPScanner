@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring Map For Keyboard
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ABUNA_FPS	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin		KEYWORD2
+monitorScanner	KEYWORD2
+standBy 	KEYWORD2
+identify	KEYWORD2
+enroll		KEYWORD2
+deleteById 	KEYWORD2
+deleteAll 	KEYWORD2
+analyzePocket 	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
