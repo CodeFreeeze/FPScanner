@@ -14,7 +14,7 @@ ABUNA_FPS	KEYWORD1
 
 begin		KEYWORD2
 monitorScanner	KEYWORD2
-standBy 	KEYWORD2
+cancel 	KEYWORD2
 identify	KEYWORD2
 enroll		KEYWORD2
 deleteById 	KEYWORD2

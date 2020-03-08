@@ -34,10 +34,10 @@ void ABUNA_FPS::begin(double baudRate){
 #endif
 }
 
-void ABUNA_FPS::standBy(){
-  mode = STANDBY_MODE;
+void ABUNA_FPS::cancel(){
+  mode = CANCEL_MODE;
   memset(requestData,0,24);
-  createRequestPocket(CMD_STANDBY, CMD_IDENTIFY , requestData, 0);
+  createRequestPocket(COMMAND_PACKET, CMD_CANCEL , requestData, 0);
   sendPocket(requestPocket);
 }
 void ABUNA_FPS::identify(){
@@ -54,7 +54,7 @@ void ABUNA_FPS::enroll(uint16_t templateId){
   sendPocket(requestPocket);
 }
 void ABUNA_FPS::deleteById(uint16_t templateId){
-  mode = DELETE_DODE;
+  mode = DELETE_MODE;
   memset(requestData,0,24);
   requestData[0] = templateId;
   createRequestPocket(COMMAND_PACKET, CMD_CLEAR_ADDR, requestData, 2);
@@ -108,7 +108,7 @@ void ABUNA_FPS::analyzePocket(){
               
             }else if(isPocketMatch(ERR_IDENTIFY, responsePocket[ADDRESS_DATA], responsePocket[ADDRESS_DATA + 1])){
               // No Fingerprint Enroll
-              response(ERR_FAIL, ERR_ALL_EMPTY, 0, "Fingerprint Not Registered");
+              response(ERR_FAIL, ERR_IDENTIFY, 0, "Fingerprint Not Registered");
 
             }else if(isPocketMatch(ERR_BAD_QLT_IMG, responsePocket[ADDRESS_DATA], responsePocket[ADDRESS_DATA + 1])){
               // Bad Quality Image
@@ -148,12 +148,12 @@ void ABUNA_FPS::analyzePocket(){
               
             }else if(isPocketMatch(ERR_TMPL_ENROLLED, responsePocket[ADDRESS_DATA], responsePocket[ADDRESS_DATA + 1])){
               // The fingerprint has been enrolled
-              response(ERR_FAIL, ERR_TMPL_NOT_EMPTY, responsePocket[ADDRESS_DATA + 2], "The fingerprint has been enrolled to ID. " + String(responsePocket[ADDRESS_DATA + 2], HEX));
+              response(ERR_FAIL, ERR_TMPL_ENROLLED, responsePocket[ADDRESS_DATA + 2], "The fingerprint has been enrolled to ID. " + String(responsePocket[ADDRESS_DATA + 2], HEX));
             }
           }
         }
         break;
-      case DELETE_DODE:
+      case DELETE_MODE:
         if(isPocketMatch(CMD_CLEAR_ADDR, responsePocket[ADDRESS_RESPONSE_COMMAND_L], responsePocket[ADDRESS_RESPONSE_COMMAND_H])){
           if(ERR_SUCCESS == responsePocket[ADDRESS_RESULT_L]){
             response(ERR_SUCCESS, CMD_CLEAR_ADDR, responsePocket[ADDRESS_DATA], "Success Delete Template, ID:" + String(responsePocket[ADDRESS_DATA], HEX));
@@ -231,9 +231,10 @@ void ABUNA_FPS::sendPocket(uint8_t pocket[]){
 
 
 /**  For Print use only **/
-int ABUNA_FPS::getMode(){
+byte ABUNA_FPS::getMode(){
   return mode;
 }
+
 uint8_t * ABUNA_FPS::getRequestPocket(){
   // Todo: return response pocket
   return requestPocket;

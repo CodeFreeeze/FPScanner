@@ -8,7 +8,6 @@
 #define ABUNA_FPS_h
 
 #include <inttypes.h>
-#include "Arduino.h" 
 
 #ifdef __AVR__
   #include <SoftwareSerial.h>
@@ -17,10 +16,10 @@
 #define FPS_ERROR 200
 
 /** FPS STATE MODE **/
-#define STANDBY_MODE 0
+#define CANCEL_MODE 0
 #define IDENTIFY_MODE  1
 #define ENROLL_MODE  2
-#define DELETE_DODE  3
+#define DELETE_MODE  3
 #define DELETE_ALL_MODE   4
 
 /** RESPONSE ADDRESS**/
@@ -55,7 +54,6 @@
 
 
 
-#define CMD_STANDBY       (0x0117) 
 #define CMD_IDENTIFY      (0x0102)
 #define CMD_ENROLL        (0x0103)
 #define CMD_ENROLL_ONE    (0x0104)
@@ -78,7 +76,7 @@
 
 class ABUNA_FPS {
 	private:
-	  #ifdef __AVR__
+		#ifdef __AVR__
   		SoftwareSerial *swSerial;
 		#endif
   		HardwareSerial *hwSerial;
@@ -86,41 +84,41 @@ class ABUNA_FPS {
 		byte fpScannerReceived[FPS_PACKET_SIZE];
 		byte fpScannerSend[24];	
 		uint8_t requestData[FPS_PACKET_SIZE] = {0};
-    uint8_t requestPocket[FPS_PACKET_SIZE]; 
+		uint8_t requestPocket[FPS_PACKET_SIZE]; 
 		uint8_t responsePocket[FPS_RESPONSE_SIZE];
 		int CKS=0;
 		byte mode = 0;
 
-    void (*onScannerResponseListener)(uint16_t resultCode, uint16_t responseCode, uint16_t data);
-    void (*onScannerResponseDetailedListener)(uint16_t resultCode, uint16_t responseCode, uint16_t data, String description);
-    
-    void response(uint16_t resultCode, uint16_t responseCode, uint16_t data);
-    void createRequestPocket(uint16_t prefix, uint16_t command, uint8_t data[], uint16_t dataSize);  
-    void sendPocket(uint8_t pocket[]);
-    boolean isPocketMatch(uint16_t pocketMatcher,uint8_t pocketLow, uint8_t pocketHigh);
+		void (*onScannerResponseListener)(uint16_t resultCode, uint16_t responseCode, uint16_t data);
+		void (*onScannerResponseDetailedListener)(uint16_t resultCode, uint16_t responseCode, uint16_t data, String description);
+		
+		void response(uint16_t resultCode, uint16_t responseCode, uint16_t data);
+		void createRequestPocket(uint16_t prefix, uint16_t command, uint8_t data[], uint16_t dataSize);  
+		void sendPocket(uint8_t pocket[]);
+		boolean isPocketMatch(uint16_t pocketMatcher,uint8_t pocketLow, uint8_t pocketHigh);
   
 	public:
 		#ifdef __AVR__
   		ABUNA_FPS(SoftwareSerial *swSerial);
 		#endif
-	  ABUNA_FPS(HardwareSerial *hwSerial);
-    void begin(double baudRate);
-    void monitorScanner();
+		ABUNA_FPS(HardwareSerial *hwSerial);
+		void begin(double baudRate);
+		void monitorScanner();
 
-    void standBy();
-    void identify();
-    void enroll(uint16_t templateId);
-    void deleteById(uint16_t templateId);
-    void deleteAll();
-    void analyzePocket();
+		void cancel();
+		void identify();
+		void enroll(uint16_t templateId);
+		void deleteById(uint16_t templateId);
+		void deleteAll();
+		void analyzePocket();
 
-    int getMode();
-    uint8_t * getRequestPocket();
-    uint8_t * getResponsePocket();
+		byte getMode();
+		uint8_t * getRequestPocket();
+		uint8_t * getResponsePocket();
 
-    void response(uint16_t resultCode, uint16_t responseCode, uint16_t data, String description);
-    void setOnScannerResponseListener(void (*listener)(uint16_t resultCode, uint16_t responseCode, uint16_t data));
-    void set0nScannerResponseDetailedListener(void (*listener)(uint16_t resultCode, uint16_t responseCode, uint16_t data, String description));
+		void response(uint16_t resultCode, uint16_t responseCode, uint16_t data, String description);
+		void setOnScannerResponseListener(void (*listener)(uint16_t resultCode, uint16_t responseCode, uint16_t data));
+		void set0nScannerResponseDetailedListener(void (*listener)(uint16_t resultCode, uint16_t responseCode, uint16_t data, String description));
 };
 
 #endif
